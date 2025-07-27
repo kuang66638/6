@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>美食外卖 - 美团点餐</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF4D4F',
+                        secondary: '#FF7A45',
+                        neutral: '#F5F5F5',
+                        dark: '#333333',
+                        light: '#FFFFFF',
+                        'text-light': '#666666',
+                        'text-lighter': '#999999'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+            .shadow-hover {
+                transition: all 0.3s ease;
+            }
+            .shadow-hover:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .category-active {
+                color: #FF4D4F;
+                border-bottom: 2px solid #FF4D4F;
+            }
+            .cart-expanded {
+                max-height: 280px !important;
+            }
+        }
+    </style>
+</head>
+<body class="font-inter bg-gray-50 text-dark">
+    <!-- 顶部导航栏 -->
+    <header class="sticky top-0 z-50 bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="text-xl font-bold">美团外卖</div>
+            <div class="flex items-center space-x-4">
+                <button class="bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center">
+                    <i class="fa fa-search text-gray-500"></i>
+                </button>
+                <button class="bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center">
+                    <i class="fa fa-user-o text-gray-500"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 分类标签 -->
+    <div class="sticky top-16 z-40 bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-3 overflow-x-auto scrollbar-hide">
+            <div class="flex space-x-6 whitespace-nowrap">
+                <div class="category-item category-active py-1 text-sm font-medium cursor-pointer">
+                    全部菜品
+                </div>
+                <div class="category-item py-1 text-sm font-medium text-text-light cursor-pointer">
+                    热菜
+                </div>
+                <div class="category-item py-1 text-sm font-medium text-text-light cursor-pointer">
+                    汤品
+                </div>
+                <div class="category-item py-1 text-sm font-medium text-text-light cursor-pointer">
+                    主食
+                </div>
+                <div class="category-item py-1 text-sm font-medium text-text-light cursor-pointer">
+                    饮品
+                </div>
+                <div class="category-item py-1 text-sm font-medium text-text-light cursor-pointer">
+                    推荐
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 菜品列表 -->
+    <main class="container mx-auto px-4 py-4 pb-32">
+        <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+            <div class="grid grid-cols-1 gap-4">
+                <!-- 菜品卡片 -->
+                <div class="food-card bg-white rounded-lg shadow-sm overflow-hidden shadow-hover">
+                    <div class="p-4">
+                        <div class="flex items-start gap-3">
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h3 class="font-bold">红烧牛肉</h3>
+                                    <span class="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">招牌</span>
+                                </div>
+                                <div class="flex items-center text-xs text-text-lighter mb-1">
+                                    <i class="fa fa-star text-yellow-400 mr-1"></i>
+                                    <span>4.8</span>
+                                    <span class="mx-1">|</span>
+                                    <span>月售258</span>
+                                </div>
+                                <p class="text-xs text-text-light mb-2 line-clamp-2">精选上等牛肉，配以多种香料红烧，肉质鲜嫩多汁，口感醇厚。</p>
+                                <div class="flex justify-between items-center">
+                                    <div class="text-primary font-bold">¥42</div>
+                                    <div class="flex items-center">
+                                        <button class="decrease-btn w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-100">
+                                            <i class="fa fa-minus text-xs"></i>
+                                        </button>
+                                        <span class="quantity mx-2 text-sm">0</span>
+                                        <button class="increase-btn w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white hover:bg-primary/90">
+                                            <i class="fa fa-plus text-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="food-card bg-white rounded-lg shadow-sm overflow-hidden shadow-hover">
+                    <div class="p-4">
+                        <div class="flex items-start gap-3">
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h3 class="font-bold">番茄炒蛋</h3>
+                                    <span class="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full">家常</span>
+                                </div>
+                                <div class="flex items-center text-xs text-text-lighter mb-1">
+                                    <i class="fa fa-star text-yellow-400 mr-1"></i>
+                                    <span>4.6</span>
+                                    <span class="mx-1">|</span>
+                                    <span>月售186</span>
+                                </div>
+                                <p class="text-xs text-text-light mb-2 line-clamp-2">新鲜番茄与土鸡蛋炒制，酸甜可口，营养丰富。</p>
+                                <div class="flex justify-between items-center">
+                                    <div class="text-primary font-bold">¥22</div>
+                                    <div class="flex items-center">
+                                        <button class="decrease-btn w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-100">
+                                            <i class="fa fa-minus text-xs"></i>
+                                        </button>
+                                        <span class="quantity mx-2 text-sm">0</span>
+                                        <button class="increase-btn w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white hover:bg-primary/90">
+                                            <i class="fa fa-plus text-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="food-card bg-white rounded-lg shadow-sm overflow-hidden shadow-hover">
+                    <div class="p-4">
+                        <div class="flex items-start gap-3">
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h3 class="font-bold">清炒土豆丝</h3>
+                                    <span class="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full">素菜</span>
+                                </div>
+                                <div class="flex items-center text-xs text-text-lighter mb-1">
+                                    <i class="fa fa-star text-yellow-400 mr-1"></i>
+                                    <span>4.5</span>
+                                    <span class="mx-1">|</span>
+                                    <span>月售156</span>
+                                </div>
+                                <p class="text-xs text-text-light mb-2 line-clamp-2">精选土豆切丝，清爽可口，口感脆嫩。</p>
+                                <div class="flex justify-between items-center">
+                                    <div class="text-primary font-bold">¥16</div>
+                                    <div class="flex items-center">
+                                        <button class="decrease-btn w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-100">
+                                            <i class="fa fa-minus text-xs"></i>
+                                        </button>
+                                        <span class="quantity mx-2 text-sm">0</span>
+                                        <button class="increase-btn w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white hover:bg-primary/90">
+                                            <i class="fa fa-plus text-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="food-card bg-white rounded-lg shadow-sm overflow-hidden shadow-hover">
+                    <div class="p-4">
+                        <div class="flex items-start gap-3">
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h3 class="font-bold">冬瓜肉丸汤</h3>
+                                    <span class="text-xs bg-purple-100 text-purple-600 px-2 py-0.5 rounded-full">汤品</span>
+                                </div>
+                                <div class="flex items-center text-xs text-text-lighter mb-1">
+                                    <i class="fa fa-star text-yellow-400 mr-1"></i>
+                                    <span>4.7</span>
+                                    <span class="mx-1">|</span>
+                                    <span>月售135</span>
+                                </div>
+                                <p class="text-xs text-text-light mb-2 line-clamp-2">冬瓜搭配手工肉丸，汤鲜味美，营养均衡。</p>
+                                <div class="flex justify-between items-center">
+                                    <div class="text-primary font-bold">¥28</div>
+                                    <div class="flex items-center">
+                                        <button class="decrease-btn w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-100">
+                                            <i class="fa fa-minus text-xs"></i>
+                                        </button>
+                                        <span class="quantity mx-2 text-sm">0</span>
+                                        <button class="increase-btn w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white hover:bg-primary/90">
+                                            <i class="fa fa-plus text-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="food-card bg-white rounded-lg shadow-sm overflow-hidden shadow-hover">
+                    <div class="p-4">
+                        <div class="flex items-start gap-3">
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h3 class="font-bold">苹果水</h3>
+                                    <span class="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded-full">饮品</span>
+                                </div>
+                                <div class="flex items-center text-xs text-text-lighter mb-1">
+                                    <i class="fa fa-star text-yellow-400 mr-1"></i>
+                                    <span>4.4</span>
+                                    <span class="mx-1">|</span>
+                                    <span>月售112</span>
+                                </div>
+                                <p class="text-xs text-text-light mb-2 line-clamp-2">新鲜苹果熬制，清甜可口，健康饮品。</p>
+                                <div class="flex justify-between items-center">
+                                    <div class="text-primary font-bold">¥12</div>
+                                    <div class="flex items-center">
+                                        <button class="decrease-btn w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-100">
+                                            <i class="fa fa-minus text-xs"></i>
+                                        </button>
+                                        <span class="quantity mx-2 text-sm">0</span>
+                                        <button class="increase-btn w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white hover:bg-primary/90">
+                                            <i class="fa fa-plus text-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="food-card bg-white rounded-lg shadow-sm overflow-hidden shadow-hover">
+                    <div class="p-4">
+                        <div class="flex items-start gap-3">
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h3 class="font-bold">瘦肉水</h3>
+                                    <span class="text-xs bg-indigo-100 text-indigo-600 px-2 py-0.5 rounded-full">养生</span>
+                                </div>
+                                <div class="flex items-center text-xs text-text-lighter mb-1">
+                                    <i class="fa fa-star text-yellow-400 mr-1"></i>
+                                    <span>4.9</span>
+                                    <span class="mx-1">|</span>
+                                    <span>月售98</span>
+                                </div>
+                                <p class="text-xs text-text-light mb-2 line-clamp-2">精选瘦肉炖制，营养丰富，适合养生。</p>
+                                <div class="flex justify-between items-center">
+                                    <div class="text-primary font-bold">¥20</div>
+                                    <div class="flex items-center">
+                                        <button class="decrease-btn w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-100">
+                                            <i class="fa fa-minus text-xs"></i>
+                                        </button>
+                                        <span class="quantity mx-2 text-sm">0</span>
+                                        <button class="increase-btn w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white hover:bg-primary/90">
+                                            <i class="fa fa-plus text-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="food-card bg-white rounded-lg shadow-sm overflow-hidden shadow-hover">
+                    <div class="p-4">
+                        <div class="flex items-start gap-3">
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h3 class="font-bold">葱油拌面</h3>
+                                    <span class="text-xs bg-amber-100 text-amber-600 px-2 py-0.5 rounded-full">主食</span>
+                                </div>
+                                <div class="flex items-center text-xs text-text-lighter mb-1">
+                                    <i class="fa fa-star text-yellow-400 mr-1"></i>
+                                    <span>4.6</span>
+                                    <span class="mx-1">|</span>
+                                    <span>月售215</span>
+                                </div>
+                                <p class="text-xs text-text-light mb-2 line-clamp-2">手工面条搭配香葱段，香气四溢，口感筋道。</p>
+                                <div class="flex justify-between items-center">
+                                    <div class="text-primary font-bold">¥18</div>
+                                    <div class="flex items-center">
+                                        <button class="decrease-btn w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-100">
+                                            <i class="fa fa-minus text-xs"></i>
+                                        </button>
+                                        <span class="quantity mx-2 text-sm">0</span>
+                                        <button class="increase-btn w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white hover:bg-primary/90">
+                                            <i class="fa fa-plus text-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="food-card bg-white rounded-lg shadow-sm overflow-hidden shadow-hover">
+                    <div class="p-4">
+                        <div class="flex items-start gap-3">
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h3 class="font-bold">白米饭</h3>
+                                    <span class="text-xs bg-teal-100 text-teal-600 px-2 py-0.5 rounded-full">主食</span>
+                                </div>
+                                <div class="flex items-center text-xs text-text-lighter mb-1">
+                                    <i class="fa fa-star text-yellow-400 mr-1"></i>
+                                    <span>4.3</span>
+                                    <span class="mx-1">|</span>
+                                    <span>月售320</span>
+                                </div>
+                                <p class="text-xs text-text-light mb-2 line-clamp-2">优质大米蒸煮，颗粒饱满，口感松软。</p>
+                                <div class="flex justify-between items-center">
+                                    <div class="text-primary font-bold">¥4</div>
+                                    <div class="flex items-center">
+                                        <button class="decrease-btn w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-100">
+                                            <i class="fa fa-minus text-xs"></i>
+                                        </button>
+                                        <span class="quantity mx-2 text-sm">0</span>
+                                        <button class="increase-btn w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white hover:bg-primary/90">
+                                            <i class="fa fa-plus text-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="food-card bg-white rounded-lg shadow-sm overflow-hidden shadow-hover">
+                    <div class="p-4">
+                        <div class="flex items-start gap-3">
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h3 class="font-bold">什锦蛋炒饭</h3>
+                                    <span class="text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full">主食</span>
+                                </div>
+                                <div class="flex items-center text-xs text-text-lighter mb-1">
+                                    <i class="fa fa-star text-yellow-400 mr-1"></i>
+                                    <span>4.7</span>
+                                    <span class="mx-1">|</span>
+                                    <span>月售178</span>
+                                </div>
+                                <p class="text-xs text-text-light mb-2 line-clamp-2">鸡蛋搭配多种蔬菜炒制，营养丰富，口感丰富。</p>
+                                <div class="flex justify-between items-center">
+                                    <div class="text-primary font-bold">¥22</div>
+                                    <div class="flex items-center">
+                                        <button class="decrease-btn w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-100">
+                                            <i class="fa fa-minus text-xs"></i>
+                                        </button>
+                                        <span class="quantity mx-2 text-sm">0</span>
+                                        <button class="increase-btn w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white hover:bg-primary/90">
+                                            <i class="fa fa-plus text-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="food-card bg-white rounded-lg shadow-sm overflow-hidden shadow-hover">
+                    <div class="p-4">
+                        <div class="flex items-start gap-3">
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h3 class="font-bold">清炒双花</h3>
+                                    <span class="text-xs bg-emerald-100 text-emerald-600 px-2 py-0.5 rounded-full">素菜</span>
+                                </div>
+                                <div class="flex items-center text-xs text-text-lighter mb-1">
+                                    <i class="fa fa-star text-yellow-400 mr-1"></i>
+                                    <span>4.5</span>
+                                    <span class="mx-1">|</span>
+                                    <span>月售124</span>
+                                </div>
+                                <p class="text-xs text-text-light mb-2 line-clamp-2">西兰花与花菜清炒，保留蔬菜的营养和脆嫩口感。</p>
+                                <div class="flex justify-between items-center">
+                                    <div class="text-primary font-bold">¥20</div>
+                                    <div class="flex items-center">
+                                        <button class="decrease-btn w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-100">
+                                            <i class="fa fa-minus text-xs"></i>
+                                        </button>
+                                        <span class="quantity mx-2 text-sm">0</span>
+                                        <button class="increase-btn w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white hover:bg-primary/90">
+                                            <i class="fa fa-plus text-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="food-card bg-white rounded-lg shadow-sm overflow-hidden shadow-hover">
+                    <div class="p-4">
+                        <div class="flex items-start gap-3">
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h3 class="font-bold">烤鸡</h3>
+                                    <span class="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded-full">招牌</span>
+                                </div>
+                                <div class="flex items-center text-xs text-text-lighter mb-1">
+                                    <i class="fa fa-star text-yellow-400 mr-1"></i>
+                                    <span>4.9</span>
+                                    <span class="mx-1">|</span>
+                                    <span>月售289</span>
+                                </div>
+                                <p class="text-xs text-text-light mb-2 line-clamp-2">秘制配方腌制，炭火烤制，外酥里嫩，香气四溢。</p>
+                                <div class="flex justify-between items-center">
+                                    <div class="text-primary font-bold">¥58</div>
+                                    <div class="flex items-center">
+                                        <button class="decrease-btn w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-100">
+                                            <i class="fa fa-minus text-xs"></i>
+                                        </button>
+                                        <span class="quantity mx-2 text-sm">0</span>
+                                        <button class="increase-btn w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white hover:bg-primary/90">
+                                            <i class="fa fa-plus text-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 购物车 -->
+    <div class="fixed bottom-0 left-0 right-0 z-40 bg-white shadow-lg transition-all duration-300">
+        <div class="cart-container">
+            <div class="cart-header flex items-center bg-dark text-white p-3 cursor-pointer" id="cart-toggle">
+                <div class="cart-icon relative mr-3">
+                    <i class="fa fa-shopping-cart text-2xl"></i>
+                    <span class="cart-count absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+                </div>
+                <div class="flex-1">
+                    <div class="cart-total font-bold">¥0</div>
+                    <div class="text-xs text-gray-300">另需配送费¥5</div>
+                </div>
+                <button class="checkout-btn bg-primary text-white py-2 px-6 rounded-full font-medium disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>
+                    去结算
+                </button>
+            </div>
+            
+            <div class="cart-items max-h-24 overflow-y-auto transition-all duration-300">
+                <!-- 购物车为空 -->
+                <div class="empty-cart flex flex-col items-center justify-center py-4 text-center">
+                    <i class="fa fa-shopping-cart text-2xl text-gray-300 mb-2"></i>
+                    <p class="text-gray-500 text-sm">购物车还是空的</p>
+                    <p class="text-gray-400 text-xs mt-1">快去添加喜欢的商品吧</p>
+                </div>
+                
+                <!-- 购物车有商品时显示 -->
+                <div class="cart-items-list hidden">
+                    <!-- 商品会动态添加到这里 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 菜品数据
+        const foods = [
+            { id: 1, name: "红烧牛肉", price: 42, category: "热菜", tags: ["招牌"] },
+            { id: 2, name: "番茄炒蛋", price: 22, category: "热菜", tags: ["家常"] },
+            { id: 3, name: "清炒土豆丝", price: 16, category: "热菜", tags: ["素菜"] },
+            { id: 4, name: "冬瓜肉丸汤", price: 28, category: "汤品", tags: [] },
+            { id: 5, name: "苹果水", price: 12, category: "饮品", tags: [] },
+            { id: 6, name: "瘦肉水", price: 20, category: "饮品", tags: ["养生"] },
+            { id: 7, name: "葱油拌面", price: 18, category: "主食", tags: [] },
+            { id: 8, name: "白米饭", price: 4, category: "主食", tags: [] },
+            { id: 9, name: "什锦蛋炒饭", price: 22, category: "主食", tags: [] },
+            { id: 10, name: "清炒双花", price: 20, category: "热菜", tags: ["素菜"] },
+            { id: 11, name: "烤鸡", price: 58, category: "热菜", tags: ["招牌"] }
+        ];
+
+        // 购物车数据
+        let cart = {};
+        let cartExpanded = false;
+
+        // 获取DOM元素
+        const increaseButtons = document.querySelectorAll('.increase-btn');
+        const decreaseButtons = document.querySelectorAll('.decrease-btn');
+        const quantityElements = document.querySelectorAll('.quantity');
+        const cartCountElement = document.querySelector('.cart-count');
+        const cartTotalElement = document.querySelector('.cart-total');
+        const emptyCartElement = document.querySelector('.empty-cart');
+        const cartItemsListElement = document.querySelector('.cart-items-list');
+        const checkoutButton = document.querySelector('.checkout-btn');
+        const categoryItems = document.querySelectorAll('.category-item');
+        const cartToggle = document.getElementById('cart-toggle');
+        const cartItems = document.querySelector('.cart-items');
+        const cartContainer = document.querySelector('.cart-container');
+
+        // 初始化事件监听
+        function initEventListeners() {
+            // 增加数量
+            increaseButtons.forEach((button, index) => {
+                button.addEventListener('click', () => {
+                    const foodId = index + 1;
+                    increaseQuantity(foodId);
+                });
+            });
+
+            // 减少数量
+            decreaseButtons.forEach((button, index) => {
+                button.addEventListener('click', () => {
+                    const foodId = index + 1;
+                    decreaseQuantity(foodId);
+                });
+            });
+
+            // 分类切换
+            categoryItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    // 移除所有active类
+                    categoryItems.forEach(i => i.classList.remove('category-active'));
+                    // 添加active类到当前点击项
+                    item.classList.add('category-active');
+                });
+            });
+
+            // 购物车展开/收起
+            cartToggle.addEventListener('click', toggleCart);
+        }
+
+        // 增加数量
+        function increaseQuantity(foodId) {
+            if (!cart[foodId]) {
+                cart[foodId] = 1;
+            } else {
+                cart[foodId]++;
+            }
+            updateCart();
+            // 自动展开购物车
+            if (!cartExpanded && Object.keys(cart).length > 0) {
+                toggleCart();
+            }
+        }
+
+        // 减少数量
+        function decreaseQuantity(foodId) {
+            if (cart[foodId]) {
+                cart[foodId]--;
+                if (cart[foodId] === 0) {
+                    delete cart[foodId];
+                }
+                updateCart();
+            }
+        }
+
+        // 切换购物车展开/收起状态
+        function toggleCart() {
+            cartExpanded = !cartExpanded;
+            if (cartExpanded) {
+                cartItems.classList.add('cart-expanded');
+                cartToggle.querySelector('.fa-shopping-cart').classList.add('fa-chevron-down');
+                cartToggle.querySelector('.fa-shopping-cart').classList.remove('fa-shopping-cart');
+            } else {
+                cartItems.classList.remove('cart-expanded');
+                cartToggle.querySelector('.fa-chevron-down').classList.add('fa-shopping-cart');
+                cartToggle.querySelector('.fa-chevron-down').classList.remove('fa-chevron-down');
+            }
+        }
+
+        // 更新购物车
+        function updateCart() {
+            // 更新购物车数量
+            const totalCount = Object.values(cart).reduce((total, count) => total + count, 0);
+            cartCountElement.textContent = totalCount;
+
+            // 更新购物车总价
+            let totalPrice = 0;
+            Object.entries(cart).forEach(([foodId, count]) => {
+                const food = foods.find(f => f.id === parseInt(foodId));
+                if (food) {
+                    totalPrice += food.price * count;
+                }
+            });
+            cartTotalElement.textContent = `¥${totalPrice}`;
+
+            // 更新商品数量显示
+            quantityElements.forEach((element, index) => {
+                const foodId = index + 1;
+                element.textContent = cart[foodId] || 0;
+            });
+
+            // 更新购物车项目列表
+            updateCartItemsList();
+
+            // 启用/禁用结算按钮
+            checkoutButton.disabled = totalCount === 0;
+        }
+
+        // 更新购物车项目列表
+        function updateCartItemsList() {
+            // 清空购物车列表
+            cartItemsListElement.innerHTML = '';
+
+            // 如果购物车为空，显示空购物车信息
+            if (Object.keys(cart).length === 0) {
+                emptyCartElement.classList.remove('hidden');
+                cartItemsListElement.classList.add('hidden');
+                return;
+            }
+
+            // 显示购物车商品列表
+            emptyCartElement.classList.add('hidden');
+            cartItemsListElement.classList.remove('hidden');
+
+            // 添加商品到购物车列表
+            Object.entries(cart).forEach(([foodId, count]) => {
+                const food = foods.find(f => f.id === parseInt(foodId));
+                if (food) {
+                    const cartItem = document.createElement('div');
+                    cartItem.className = 'cart-item flex items-center justify-between p-3 border-b border-gray-100';
+                    cartItem.innerHTML = `
+                        <div class="flex items-center">
+                            <div class="mr-3">
+                                <div class="font-medium">${food.name}</div>
+                                <div class="text-primary font-bold">¥${food.price}</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <button class="decrease-cart-btn w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-100">
+                                <i class="fa fa-minus text-xs"></i>
+                            </button>
+                            <span class="mx-3">${count}</span>
+                            <button class="increase-cart-btn w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white hover:bg-primary/90">
+                                <i class="fa fa-plus text-xs"></i>
+                            </button>
+                        </div>
+                    `;
+                    cartItemsListElement.appendChild(cartItem);
+
+                    // 为购物车中的增减按钮添加事件
+                    const decreaseBtn = cartItem.querySelector('.decrease-cart-btn');
+                    const increaseBtn = cartItem.querySelector('.increase-cart-btn');
+
+                    decreaseBtn.addEventListener('click', () => decreaseQuantity(food.id));
+                    increaseBtn.addEventListener('click', () => increaseQuantity(food.id));
+                }
+            });
+        }
+
+        // 初始化
+        initEventListeners();
+        updateCart();
+
+        // 结算按钮点击事件
+        checkoutButton.addEventListener('click', () => {
+            if (Object.keys(cart).length > 0) {
+                alert('结算功能将跳转到支付页面，这里仅作演示。');
+            }
+        });
+
+        // 滚动时自动收起购物车
+        window.addEventListener('scroll', () => {
+            if (cartExpanded) {
+                toggleCart();
+            }
+        });
+    </script>
+</body>
+</html>
+    
